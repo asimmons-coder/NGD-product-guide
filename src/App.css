@@ -802,6 +802,159 @@ body {
   text-decoration: none;
 }
 
+/* ===== Landing Page Search ===== */
+.landing-search {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg) var(--space-2xl);
+}
+
+.search-box-small .search-input {
+  padding: var(--space-sm) var(--space-md) var(--space-sm) 44px;
+  font-size: 0.9375rem;
+}
+
+/* ===== Category Cards ===== */
+.category-cards-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg) var(--space-3xl);
+}
+
+.category-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+}
+
+.category-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.category-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.category-card-icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-xs);
+}
+
+.category-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.category-card-description {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.category-card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.category-card-count {
+  font-size: 0.8125rem;
+  color: var(--color-text-light);
+}
+
+.category-card-trending {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-orange);
+  background: var(--color-orange-bg);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+/* ===== Category Page Header ===== */
+.category-header-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg) var(--space-lg);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-sm) 0;
+  margin-bottom: var(--space-lg);
+  transition: color var(--transition-fast);
+}
+
+.back-link:hover {
+  color: var(--color-accent);
+}
+
+.category-page-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.category-page-icon {
+  font-size: 3rem;
+}
+
+.category-page-title {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.category-page-count {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  margin: var(--space-xs) 0 0 0;
+}
+
+.category-filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.category-filters .search-box {
+  margin-bottom: 0;
+}
+
+.category-filters .filter-row {
+  justify-content: flex-start;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   .header-content {
@@ -809,47 +962,83 @@ body {
     gap: var(--space-sm);
     text-align: center;
   }
-  
+
   .hero {
     padding: var(--space-2xl) var(--space-lg);
   }
-  
+
   .hero-title {
     font-size: 2rem;
   }
-  
+
   .trending-subtitle {
     display: none;
   }
-  
+
   .filter-row {
     flex-direction: column;
   }
-  
+
   .filter-group select {
     width: 100%;
   }
-  
+
   .legend {
     gap: var(--space-md);
     justify-content: center;
   }
-  
+
   .legend-label {
     display: none;
   }
-  
+
   .products-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .product-footer {
     flex-direction: column;
     gap: var(--space-md);
     align-items: stretch;
   }
-  
+
   .share-btn {
+    justify-content: center;
+  }
+
+  /* Category cards - 2 columns on tablet */
+  .category-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+
+  .category-card {
+    padding: var(--space-lg);
+  }
+
+  .category-card-icon {
+    font-size: 2rem;
+  }
+
+  .category-card-title {
+    font-size: 1.125rem;
+  }
+
+  .category-page-header {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-sm);
+  }
+
+  .category-page-title {
+    font-size: 1.5rem;
+  }
+
+  .category-page-icon {
+    font-size: 2.5rem;
+  }
+
+  .back-link {
     justify-content: center;
   }
 }
@@ -859,8 +1048,34 @@ body {
     flex-direction: column;
     gap: 0;
   }
-  
+
   .trending-pills {
     justify-content: center;
+  }
+
+  /* Category cards - single column on mobile */
+  .category-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .category-card {
+    flex-direction: row;
+    text-align: left;
+    padding: var(--space-lg);
+    gap: var(--space-md);
+  }
+
+  .category-card-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+
+  .category-card-content {
+    flex: 1;
+  }
+
+  .category-card-meta {
+    justify-content: flex-start;
+    margin-top: var(--space-sm);
   }
 }
