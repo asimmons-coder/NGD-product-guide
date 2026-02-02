@@ -7,6 +7,12 @@
   padding: 0;
 }
 
+/* Touch-friendly defaults */
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
 :root {
   /* Brand colors - warm, sophisticated, medical-but-approachable */
   --color-bg: #faf8f5;
@@ -1015,15 +1021,40 @@ body {
 
   .filter-row {
     flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .filter-group {
+    width: 100%;
   }
 
   .filter-group select {
     width: 100%;
+    padding: var(--space-md);
+    font-size: 1rem;
+  }
+
+  .ngd-filter-toggle {
+    padding: var(--space-md);
+    background: var(--color-bg);
+    border-radius: var(--radius-md);
+    justify-content: center;
+  }
+
+  .ngd-filter-toggle input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .search-input {
+    padding: var(--space-lg) var(--space-md) var(--space-lg) 48px;
+    font-size: 1rem;
   }
 
   .legend {
     gap: var(--space-md);
     justify-content: center;
+    flex-wrap: wrap;
   }
 
   .legend-label {
@@ -1034,6 +1065,20 @@ body {
     grid-template-columns: 1fr;
   }
 
+  .product-name {
+    font-size: 1.125rem;
+  }
+
+  .product-header {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .ngd-tag {
+    font-size: 0.75rem;
+    padding: var(--space-sm) var(--space-md);
+  }
+
   .product-footer {
     flex-direction: column;
     gap: var(--space-md);
@@ -1042,6 +1087,7 @@ body {
 
   .share-btn {
     justify-content: center;
+    padding: var(--space-md);
   }
 
   /* Category cards - 2 columns on tablet */
@@ -1087,8 +1133,57 @@ body {
     gap: 0;
   }
 
+  .hero {
+    padding: var(--space-xl) var(--space-md);
+  }
+
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.9375rem;
+  }
+
+  .filters-section {
+    padding: 0 var(--space-md) var(--space-md);
+  }
+
   .trending-pills {
     justify-content: center;
+    gap: var(--space-sm);
+  }
+
+  .trending-pill {
+    font-size: 0.8125rem;
+    padding: var(--space-sm);
+  }
+
+  .product-card {
+    padding: var(--space-md);
+  }
+
+  .product-name {
+    font-size: 1rem;
+  }
+
+  .product-meta {
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .concern-tag {
+    font-size: 0.6875rem;
+  }
+
+  .ngd-tag {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .expand-btn {
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.8125rem;
   }
 
   /* Category cards - single column on mobile */
@@ -1115,5 +1210,9 @@ body {
   .category-card-meta {
     justify-content: flex-start;
     margin-top: var(--space-sm);
+  }
+
+  .category-page-title {
+    font-size: 1.25rem;
   }
 }
