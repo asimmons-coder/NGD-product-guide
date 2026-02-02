@@ -200,7 +200,52 @@ const products = [
   }
 ];
 
-const categories = ['All', 'Moisturizer', 'Serum', 'Sunscreen', 'Retinoid', 'Exfoliant', 'Device'];
+// Category metadata for landing page cards
+const categoryMeta = {
+  'Sunscreen': {
+    icon: '☀️',
+    slug: 'sunscreens',
+    description: 'Protection from UV damage',
+    color: '#f59e0b'
+  },
+  'Moisturizer': {
+    icon: '💧',
+    slug: 'moisturizers',
+    description: 'Hydration & skin barrier',
+    color: '#3b82f6'
+  },
+  'Serum': {
+    icon: '✨',
+    slug: 'serums',
+    description: 'Targeted treatments',
+    color: '#8b5cf6'
+  },
+  'Retinoid': {
+    icon: '💊',
+    slug: 'retinoids',
+    description: 'Anti-aging & acne',
+    color: '#ec4899'
+  },
+  'Exfoliant': {
+    icon: '🧴',
+    slug: 'exfoliants',
+    description: 'Cell turnover & texture',
+    color: '#10b981'
+  },
+  'Device': {
+    icon: '🔬',
+    slug: 'devices',
+    description: 'Tools & technology',
+    color: '#6366f1'
+  }
+};
+
+// Map slugs back to category names
+const slugToCategory = Object.entries(categoryMeta).reduce((acc, [cat, meta]) => {
+  acc[meta.slug] = cat;
+  return acc;
+}, {});
+
 const ratings = [
   { value: 'all', label: 'All Ratings' },
   { value: 'gold', label: 'Gold Standard' },
@@ -219,6 +264,9 @@ const ratingConfig = {
 };
 
 function App() {
+  // View state: 'landing' (home), 'category' (filtered by category), or product detail
+  const [currentView, setCurrentView] = useState('landing');
+  const [activeCategory, setActiveCategory] = useState(null);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [ratingFilter, setRatingFilter] = useState('all');
@@ -226,28 +274,93 @@ function App() {
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
 
-  // Handle URL hash for direct product links
+  // Handle URL hash for direct links (products and categories)
   useEffect(() => {
-    const hash = window.location.hash.slice(1);
-    if (hash) {
-      setExpandedProduct(hash);
-      setTimeout(() => {
-        document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
-    }
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1);
+      if (!hash) {
+        setCurrentView('landing');
+        setActiveCategory(null);
+        setExpandedProduct(null);
+        return;
+      }
+
+      // Check if it's a category slug
+      if (slugToCategory[hash]) {
+        setCurrentView('category');
+        setActiveCategory(slugToCategory[hash]);
+        setExpandedProduct(null);
+        return;
+      }
+
+      // Otherwise treat as product ID
+      const product = products.find(p => p.id === hash);
+      if (product) {
+        setCurrentView('category');
+        setActiveCategory(product.category);
+        setExpandedProduct(hash);
+        setTimeout(() => {
+          document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
+    };
+
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
+
+  const navigateTo = (view, category = null, productId = null) => {
+    setCurrentView(view);
+    setActiveCategory(category);
+    setExpandedProduct(productId);
+
+    if (view === 'landing') {
+      window.history.pushState(null, '', window.location.pathname);
+    } else if (view === 'category' && category && categoryMeta[category]) {
+      window.history.pushState(null, '', `#${categoryMeta[category].slug}`);
+    } else if (productId) {
+      window.history.pushState(null, '', `#${productId}`);
+    }
+  };
 
   const updateHash = (productId) => {
     if (productId) {
       window.history.pushState(null, '', `#${productId}`);
+    } else if (activeCategory && categoryMeta[activeCategory]) {
+      window.history.pushState(null, '', `#${categoryMeta[activeCategory].slug}`);
     } else {
       window.history.pushState(null, '', window.location.pathname);
     }
   };
 
+  // Get products for current category view
+  const categoryProducts = useMemo(() => {
+    if (!activeCategory) return [];
+    return products.filter(p => p.category === activeCategory);
+  }, [activeCategory]);
+
+  // Get product counts per category
+  const categoryCounts = useMemo(() => {
+    const counts = {};
+    products.forEach(p => {
+      counts[p.category] = (counts[p.category] || 0) + 1;
+    });
+    return counts;
+  }, []);
+
+  // Get trending counts per category
+  const categoryTrendingCounts = useMemo(() => {
+    const counts = {};
+    products.filter(p => p.trending).forEach(p => {
+      counts[p.category] = (counts[p.category] || 0) + 1;
+    });
+    return counts;
+  }, []);
+
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
-      const matchesSearch = search === '' || 
+      const matchesSearch = search === '' ||
         product.name.toLowerCase().includes(search.toLowerCase()) ||
         product.concerns.some(c => c.toLowerCase().includes(search.toLowerCase()));
       const matchesCategory = categoryFilter === 'All' || product.category === categoryFilter;
@@ -256,12 +369,24 @@ function App() {
     });
   }, [search, categoryFilter, ratingFilter]);
 
-  const trendingProducts = products.filter(p => p.trending);
-
   const handleProductClick = (productId) => {
     const newExpanded = expandedProduct === productId ? null : productId;
     setExpandedProduct(newExpanded);
-    updateHash(newExpanded);
+    if (newExpanded) {
+      window.history.pushState(null, '', `#${productId}`);
+    } else {
+      updateHash(null);
+    }
+  };
+
+  const handleCategoryClick = (category) => {
+    navigateTo('category', category);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleBackToLanding = () => {
+    navigateTo('landing');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const copyProductLink = (e, productId) => {
@@ -286,13 +411,73 @@ function App() {
     day: 'numeric' 
   });
 
+  // Render product card (reusable)
+  const renderProductCard = (product) => {
+    const config = ratingConfig[product.rating];
+    const isExpanded = expandedProduct === product.id;
+    return (
+      <article
+        key={product.id}
+        id={product.id}
+        className={`product-card ${isExpanded ? 'expanded' : ''}`}
+        onClick={() => handleProductClick(product.id)}
+      >
+        <div className="product-header">
+          <div className="product-rating-badge" style={{ background: config.bg, color: config.color }}>
+            <span className="badge-icon">{config.icon}</span>
+            <span className="badge-label">{config.label}</span>
+          </div>
+          {product.trending && <span className="trending-tag">Trending</span>}
+        </div>
+        <h3 className="product-name">{product.name}</h3>
+        <div className="product-meta">
+          <span className="product-category">{product.category}</span>
+          <span className="meta-divider">•</span>
+          <span className="product-evidence">Evidence: {product.evidence}</span>
+        </div>
+        <div className="product-concerns">
+          {product.concerns.map(concern => (
+            <span key={concern} className="concern-tag">{concern}</span>
+          ))}
+        </div>
+
+        {isExpanded && (
+          <div className="product-details">
+            <div className="detail-section">
+              <h4>Overview</h4>
+              <p>{product.overview}</p>
+            </div>
+            <div className="detail-section verdict">
+              <h4>Our Verdict</h4>
+              <p>{product.verdict}</p>
+            </div>
+            <div className="product-footer">
+              <span className="reviewed-date">Last reviewed {new Date(product.lastReviewed).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+              <button className="share-btn" onClick={(e) => copyProductLink(e, product.id)}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                </svg>
+                Copy Link
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="expand-indicator">
+          {isExpanded ? 'Click to collapse' : 'Click for details'}
+        </div>
+      </article>
+    );
+  };
+
   return (
     <div className="app">
       {/* Header */}
       <header className="header">
         <div className="header-content">
           <div className="logo-section">
-            <h1 className="logo">Novice Group</h1>
+            <h1 className="logo" onClick={handleBackToLanding} style={{ cursor: 'pointer' }}>Novice Group</h1>
             <span className="logo-subtitle">Dermatology</span>
           </div>
           <div className="header-meta">
@@ -301,179 +486,203 @@ function App() {
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="hero">
-        <div className="hero-content">
-          <h2 className="hero-title">Product Guide</h2>
-          <p className="hero-subtitle">
-            Evidence-based opinions on skincare products from our dermatology team. 
-            Cut through the noise—know what actually works.
-          </p>
-        </div>
-      </section>
+      {/* LANDING PAGE VIEW */}
+      {currentView === 'landing' && (
+        <>
+          {/* Hero */}
+          <section className="hero">
+            <div className="hero-content">
+              <h2 className="hero-title">Product Guide</h2>
+              <p className="hero-subtitle">
+                Evidence-based opinions on skincare products from our dermatology team.
+                Cut through the noise—know what actually works.
+              </p>
+            </div>
+          </section>
 
-      {/* Trending Section */}
-      {trendingProducts.length > 0 && (
-        <section className="trending-section">
-          <div className="trending-header">
-            <span className="trending-icon">📈</span>
-            <h3>Trending Now</h3>
-            <span className="trending-subtitle">What patients are asking about</span>
-          </div>
-          <div className="trending-pills">
-            {trendingProducts.map(product => (
-              <button
-                key={product.id}
-                className={`trending-pill ${product.rating}`}
-                onClick={() => {
-                  setExpandedProduct(product.id);
-                  updateHash(product.id);
-                  document.getElementById(product.id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          {/* Search Bar (Secondary) */}
+          <section className="landing-search">
+            <div className="search-box search-box-small">
+              <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+              </svg>
+              <input
+                type="text"
+                placeholder="Search products or concerns..."
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  if (e.target.value) {
+                    setCategoryFilter('All');
+                    setRatingFilter('all');
+                    navigateTo('category', null);
+                  }
                 }}
-              >
-                <span className="pill-icon">{ratingConfig[product.rating].icon}</span>
-                {product.name}
+                className="search-input"
+              />
+            </div>
+          </section>
+
+          {/* Category Cards Grid */}
+          <section className="category-cards-section">
+            <div className="category-cards-grid">
+              {Object.entries(categoryMeta).map(([category, meta]) => {
+                const count = categoryCounts[category] || 0;
+                const trendingCount = categoryTrendingCounts[category] || 0;
+                return (
+                  <button
+                    key={category}
+                    className="category-card"
+                    onClick={() => handleCategoryClick(category)}
+                  >
+                    <span className="category-card-icon">{meta.icon}</span>
+                    <h3 className="category-card-title">{meta.slug.charAt(0).toUpperCase() + meta.slug.slice(1)}</h3>
+                    <p className="category-card-description">{meta.description}</p>
+                    <div className="category-card-meta">
+                      <span className="category-card-count">{count} product{count !== 1 ? 's' : ''}</span>
+                      {trendingCount > 0 && (
+                        <span className="category-card-trending">{trendingCount} trending</span>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Request CTA */}
+          <section className="request-section">
+            <div className="request-prompt">
+              <h3>Don't see a product?</h3>
+              <p>Ask us to review something you're curious about.</p>
+              <button className="request-btn" onClick={() => setShowRequestForm(true)}>
+                Request a Review
               </button>
-            ))}
-          </div>
-        </section>
+            </div>
+          </section>
+        </>
       )}
 
-      {/* Filters */}
-      <section className="filters-section">
-        <div className="search-box">
-          <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="M21 21l-4.35-4.35"/>
-          </svg>
-          <input
-            type="text"
-            placeholder="Search products or concerns (e.g., acne, anti-aging)..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="search-input"
-          />
-        </div>
-        <div className="filter-row">
-          <div className="filter-group">
-            <label>Category</label>
-            <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
-          <div className="filter-group">
-            <label>Rating</label>
-            <select value={ratingFilter} onChange={(e) => setRatingFilter(e.target.value)}>
-              {ratings.map(r => (
-                <option key={r.value} value={r.value}>{r.label}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </section>
-
-      {/* Rating Legend */}
-      <section className="legend-section">
-        <div className="legend">
-          {Object.entries(ratingConfig).map(([key, config]) => (
-            <div key={key} className="legend-item">
-              <span className="legend-badge" style={{ background: config.bg, color: config.color }}>
-                {config.icon}
-              </span>
-              <span className="legend-label">{config.label}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Products Grid */}
-      <section className="products-section">
-        <div className="products-count">
-          {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''}
-        </div>
-        <div className="products-grid">
-          {filteredProducts.map(product => {
-            const config = ratingConfig[product.rating];
-            const isExpanded = expandedProduct === product.id;
-            return (
-              <article
-                key={product.id}
-                id={product.id}
-                className={`product-card ${isExpanded ? 'expanded' : ''}`}
-                onClick={() => handleProductClick(product.id)}
-              >
-                <div className="product-header">
-                  <div className="product-rating-badge" style={{ background: config.bg, color: config.color }}>
-                    <span className="badge-icon">{config.icon}</span>
-                    <span className="badge-label">{config.label}</span>
-                  </div>
-                  {product.trending && <span className="trending-tag">Trending</span>}
-                </div>
-                <h3 className="product-name">{product.name}</h3>
-                <div className="product-meta">
-                  <span className="product-category">{product.category}</span>
-                  <span className="meta-divider">•</span>
-                  <span className="product-evidence">Evidence: {product.evidence}</span>
-                </div>
-                <div className="product-concerns">
-                  {product.concerns.map(concern => (
-                    <span key={concern} className="concern-tag">{concern}</span>
-                  ))}
-                </div>
-                
-                {isExpanded && (
-                  <div className="product-details">
-                    <div className="detail-section">
-                      <h4>Overview</h4>
-                      <p>{product.overview}</p>
-                    </div>
-                    <div className="detail-section verdict">
-                      <h4>Our Verdict</h4>
-                      <p>{product.verdict}</p>
-                    </div>
-                    <div className="product-footer">
-                      <span className="reviewed-date">Last reviewed {new Date(product.lastReviewed).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-                      <button className="share-btn" onClick={(e) => copyProductLink(e, product.id)}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
-                          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-                        </svg>
-                        Copy Link
-                      </button>
-                    </div>
-                  </div>
-                )}
-                
-                <div className="expand-indicator">
-                  {isExpanded ? 'Click to collapse' : 'Click for details'}
-                </div>
-              </article>
-            );
-          })}
-        </div>
-
-        {filteredProducts.length === 0 && (
-          <div className="no-results">
-            <p>No products match your search.</p>
-            <button onClick={() => { setSearch(''); setCategoryFilter('All'); setRatingFilter('all'); }}>
-              Clear filters
+      {/* CATEGORY PAGE VIEW */}
+      {currentView === 'category' && (
+        <>
+          {/* Back Link */}
+          <section className="category-header-section">
+            <button className="back-link" onClick={handleBackToLanding}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+              All Categories
             </button>
-          </div>
-        )}
-      </section>
 
-      {/* Request Form */}
-      <section className="request-section">
-        <div className="request-prompt">
-          <h3>Don't see a product?</h3>
-          <p>Ask us to review something you're curious about.</p>
-          <button className="request-btn" onClick={() => setShowRequestForm(true)}>
-            Request a Review
-          </button>
-        </div>
-      </section>
+            {activeCategory && categoryMeta[activeCategory] ? (
+              <div className="category-page-header">
+                <span className="category-page-icon">{categoryMeta[activeCategory].icon}</span>
+                <div>
+                  <h2 className="category-page-title">
+                    {categoryMeta[activeCategory].slug.charAt(0).toUpperCase() + categoryMeta[activeCategory].slug.slice(1)}
+                  </h2>
+                  <p className="category-page-count">
+                    {categoryProducts.length} product{categoryProducts.length !== 1 ? 's' : ''} reviewed
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="category-page-header">
+                <div>
+                  <h2 className="category-page-title">Search Results</h2>
+                  <p className="category-page-count">
+                    {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Search within category */}
+            <div className="category-filters">
+              <div className="search-box">
+                <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="M21 21l-4.35-4.35"/>
+                </svg>
+                <input
+                  type="text"
+                  placeholder={activeCategory ? `Search ${categoryMeta[activeCategory]?.slug || 'products'}...` : "Search products..."}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="search-input"
+                />
+              </div>
+              <div className="filter-row">
+                <div className="filter-group">
+                  <label>Rating</label>
+                  <select value={ratingFilter} onChange={(e) => setRatingFilter(e.target.value)}>
+                    {ratings.map(r => (
+                      <option key={r.value} value={r.value}>{r.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Rating Legend */}
+          <section className="legend-section">
+            <div className="legend">
+              {Object.entries(ratingConfig).map(([key, config]) => (
+                <div key={key} className="legend-item">
+                  <span className="legend-badge" style={{ background: config.bg, color: config.color }}>
+                    {config.icon}
+                  </span>
+                  <span className="legend-label">{config.label}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Products List */}
+          <section className="products-section">
+            <div className="products-grid">
+              {(activeCategory ? categoryProducts : filteredProducts)
+                .filter(product => {
+                  const matchesSearch = search === '' ||
+                    product.name.toLowerCase().includes(search.toLowerCase()) ||
+                    product.concerns.some(c => c.toLowerCase().includes(search.toLowerCase()));
+                  const matchesRating = ratingFilter === 'all' || product.rating === ratingFilter;
+                  return matchesSearch && matchesRating;
+                })
+                .map(product => renderProductCard(product))}
+            </div>
+
+            {(activeCategory ? categoryProducts : filteredProducts).filter(product => {
+              const matchesSearch = search === '' ||
+                product.name.toLowerCase().includes(search.toLowerCase()) ||
+                product.concerns.some(c => c.toLowerCase().includes(search.toLowerCase()));
+              const matchesRating = ratingFilter === 'all' || product.rating === ratingFilter;
+              return matchesSearch && matchesRating;
+            }).length === 0 && (
+              <div className="no-results">
+                <p>No products match your search.</p>
+                <button onClick={() => { setSearch(''); setRatingFilter('all'); }}>
+                  Clear filters
+                </button>
+              </div>
+            )}
+          </section>
+
+          {/* Request CTA */}
+          <section className="request-section">
+            <div className="request-prompt">
+              <h3>Don't see a product?</h3>
+              <p>Ask us to review something you're curious about.</p>
+              <button className="request-btn" onClick={() => setShowRequestForm(true)}>
+                Request a Review
+              </button>
+            </div>
+          </section>
+        </>
+      )}
 
       {/* Request Modal */}
       {showRequestForm && (
