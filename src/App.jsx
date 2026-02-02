@@ -892,6 +892,7 @@ function App() {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [ratingFilter, setRatingFilter] = useState('all');
+  const [ngdOnlyFilter, setNgdOnlyFilter] = useState(false);
   const [expandedProduct, setExpandedProduct] = useState(null);
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
@@ -1050,6 +1051,11 @@ function App() {
             <span className="badge-label">{config.label}</span>
           </div>
           {product.trending && <span className="trending-tag">Trending</span>}
+          {product.carriedByNGD && (
+            <span className="ngd-tag">
+              Available at NGD {product.price && <span className="ngd-price">{product.price}</span>}
+            </span>
+          )}
         </div>
         <h3 className="product-name">{product.name}</h3>
         <div className="product-meta">
@@ -1245,6 +1251,14 @@ function App() {
                     ))}
                   </select>
                 </div>
+                <label className="ngd-filter-toggle">
+                  <input
+                    type="checkbox"
+                    checked={ngdOnlyFilter}
+                    onChange={(e) => setNgdOnlyFilter(e.target.checked)}
+                  />
+                  <span>Available at NGD only</span>
+                </label>
               </div>
             </div>
           </section>
@@ -1272,7 +1286,8 @@ function App() {
                     product.name.toLowerCase().includes(search.toLowerCase()) ||
                     product.concerns.some(c => c.toLowerCase().includes(search.toLowerCase()));
                   const matchesRating = ratingFilter === 'all' || product.rating === ratingFilter;
-                  return matchesSearch && matchesRating;
+                  const matchesNGD = !ngdOnlyFilter || product.carriedByNGD;
+                  return matchesSearch && matchesRating && matchesNGD;
                 })
                 .map(product => renderProductCard(product))}
             </div>
@@ -1282,11 +1297,12 @@ function App() {
                 product.name.toLowerCase().includes(search.toLowerCase()) ||
                 product.concerns.some(c => c.toLowerCase().includes(search.toLowerCase()));
               const matchesRating = ratingFilter === 'all' || product.rating === ratingFilter;
-              return matchesSearch && matchesRating;
+              const matchesNGD = !ngdOnlyFilter || product.carriedByNGD;
+              return matchesSearch && matchesRating && matchesNGD;
             }).length === 0 && (
               <div className="no-results">
                 <p>No products match your search.</p>
-                <button onClick={() => { setSearch(''); setRatingFilter('all'); }}>
+                <button onClick={() => { setSearch(''); setRatingFilter('all'); setNgdOnlyFilter(false); }}>
                   Clear filters
                 </button>
               </div>

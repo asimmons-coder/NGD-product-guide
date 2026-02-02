@@ -410,6 +410,44 @@ body {
   border-radius: var(--radius-sm);
 }
 
+.ngd-tag {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #047857;
+  background: #d1fae5;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.ngd-price {
+  font-weight: 700;
+  color: #065f46;
+}
+
+.ngd-filter-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.ngd-filter-toggle input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #047857;
+  cursor: pointer;
+}
+
+.ngd-filter-toggle span {
+  white-space: nowrap;
+}
+
 .product-name {
   font-family: var(--font-heading);
   font-size: 1.25rem;
