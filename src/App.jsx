@@ -801,6 +801,173 @@ const products = [
     overview: 'A breathable, aloe-based foundation that can be worn immediately after procedures. Contains ceravitae to promote healing while providing coverage.',
     verdict: 'The only foundation we recommend immediately post-procedure. The formula is truly breathable and supports healing rather than impeding it. Great for covering bruising after injectables or redness after lasers. Multiple shades available.',
     lastReviewed: '2025-01-18'
+  },
+
+  // ============ PROCEDURES ============
+  {
+    id: 'botox',
+    name: 'Botox / Dysport / Xeomin',
+    category: 'Procedures',
+    rating: 'gold',
+    ratingLabel: 'Gold Standard',
+    evidence: 'Extensive',
+    concerns: ['Wrinkles', 'Fine Lines', 'Crow\'s Feet', 'Forehead Lines', 'Frown Lines'],
+    trending: false,
+    carriedByNGD: true,
+    price: 'Consultation required',
+    overview: 'Neuromodulators that temporarily relax muscles causing dynamic wrinkles. FDA-approved for cosmetic use with decades of safety data.',
+    verdict: 'The gold standard for treating dynamic wrinkles. Results last 3-4 months. We use all three brands and can help determine which is best for your needs. Preventative use in your 20s-30s can delay wrinkle formation.',
+    lastReviewed: '2025-01-25'
+  },
+  {
+    id: 'dermal-fillers',
+    name: 'Dermal Fillers (Juvederm, Restylane, RHA)',
+    category: 'Procedures',
+    rating: 'gold',
+    ratingLabel: 'Gold Standard',
+    evidence: 'Extensive',
+    concerns: ['Volume Loss', 'Nasolabial Folds', 'Lip Enhancement', 'Cheek Volume', 'Under-Eye Hollows'],
+    trending: false,
+    carriedByNGD: true,
+    price: 'Consultation required',
+    overview: 'Hyaluronic acid-based injectables that restore volume, smooth lines, and enhance facial contours. Multiple formulations for different areas and goals.',
+    verdict: 'Safe, reversible, and natural-looking when done well. Results last 6-18 months depending on the product and area. We carry the full range of Juvederm, Restylane, and RHA products to customize your treatment.',
+    lastReviewed: '2025-01-25'
+  },
+  {
+    id: 'clear-brilliant',
+    name: 'Clear + Brilliant Laser',
+    category: 'Procedures',
+    rating: 'recommended',
+    ratingLabel: 'Recommended',
+    evidence: 'Strong',
+    concerns: ['Skin Texture', 'Pore Size', 'Early Signs of Aging', 'Skin Tone', 'Prevention'],
+    trending: false,
+    carriedByNGD: true,
+    price: 'Starting at $350',
+    overview: 'A gentle fractionated laser that creates microscopic treatment zones to stimulate collagen and improve skin quality. Minimal downtime.',
+    verdict: 'The "baby Fraxel" for patients who want laser benefits without significant downtime. Perfect for maintenance, prevention, or those new to lasers. Best results with a series of treatments.',
+    lastReviewed: '2025-01-22'
+  },
+  {
+    id: 'fraxel',
+    name: 'Fraxel Laser Resurfacing',
+    category: 'Procedures',
+    rating: 'gold',
+    ratingLabel: 'Gold Standard',
+    evidence: 'Extensive',
+    concerns: ['Sun Damage', 'Acne Scars', 'Wrinkles', 'Texture', 'Hyperpigmentation'],
+    trending: false,
+    carriedByNGD: true,
+    price: 'Starting at $1,200',
+    overview: 'Fractionated resurfacing laser that treats a portion of skin at a time, allowing faster healing while delivering dramatic results for aging, scarring, and sun damage.',
+    verdict: 'One of the most effective treatments for photodamage and acne scarring. Expect 3-5 days of significant redness and peeling. Results are long-lasting and often transformative. Not for darker skin tones.',
+    lastReviewed: '2025-01-22'
+  },
+  {
+    id: 'ipl-photofacial',
+    name: 'IPL Photofacial',
+    category: 'Procedures',
+    rating: 'recommended',
+    ratingLabel: 'Recommended',
+    evidence: 'Strong',
+    concerns: ['Sun Spots', 'Redness', 'Rosacea', 'Broken Capillaries', 'Uneven Tone'],
+    trending: false,
+    carriedByNGD: true,
+    price: 'Starting at $400',
+    overview: 'Intense Pulsed Light therapy that targets pigment and vascular concerns. Treats brown spots, redness, and broken blood vessels with minimal downtime.',
+    verdict: 'Excellent for addressing sun damage and redness. Brown spots will darken and flake off over 1-2 weeks. Best results with a series of 3-5 treatments. Not suitable for darker skin tones.',
+    lastReviewed: '2025-01-20'
+  },
+  {
+    id: 'microneedling-prp',
+    name: 'Microneedling with PRP',
+    category: 'Procedures',
+    rating: 'recommended',
+    ratingLabel: 'Recommended',
+    evidence: 'Strong',
+    concerns: ['Acne Scars', 'Fine Lines', 'Skin Texture', 'Collagen Production'],
+    trending: false,
+    carriedByNGD: true,
+    price: 'Starting at $600',
+    overview: 'Professional microneedling creates controlled micro-injuries while PRP (platelet-rich plasma) from your own blood accelerates healing and collagen production.',
+    verdict: 'Much more effective than at-home devices. The professional depth (1.5-2mm) actually stimulates collagen remodeling. PRP enhances results. Excellent for acne scars and general rejuvenation. Safe for all skin tones.',
+    lastReviewed: '2025-01-22'
+  },
+  {
+    id: 'chemical-peels',
+    name: 'Chemical Peels (Professional)',
+    category: 'Procedures',
+    rating: 'recommended',
+    ratingLabel: 'Recommended',
+    evidence: 'Strong',
+    concerns: ['Acne', 'Hyperpigmentation', 'Texture', 'Fine Lines', 'Dull Skin'],
+    trending: false,
+    carriedByNGD: true,
+    price: 'Starting at $150',
+    overview: 'Professional-strength acid peels (glycolic, salicylic, TCA, etc.) that remove damaged outer layers to reveal fresher, smoother skin beneath.',
+    verdict: 'More effective than OTC products due to higher concentrations and proper application. We offer peels ranging from no-downtime lunchtime peels to more aggressive treatments. Regular peels maintain results from other procedures.',
+    lastReviewed: '2025-01-18'
+  },
+  {
+    id: 'hydrafacial',
+    name: 'HydraFacial',
+    category: 'Procedures',
+    rating: 'recommended',
+    ratingLabel: 'Recommended',
+    evidence: 'Moderate',
+    concerns: ['Hydration', 'Pores', 'Congestion', 'Glow', 'Maintenance'],
+    trending: true,
+    carriedByNGD: true,
+    price: 'Starting at $199',
+    overview: 'A multi-step treatment that cleanses, exfoliates, extracts, and hydrates using patented Vortex-Fusion technology. Customizable with boosters for specific concerns.',
+    verdict: 'A great "red carpet" treatment for instant glow with zero downtime. Best for maintenance and hydration rather than correcting major concerns. Popular before events. Can be combined with other treatments.',
+    lastReviewed: '2025-01-20'
+  },
+  {
+    id: 'kybella',
+    name: 'Kybella (Deoxycholic Acid)',
+    category: 'Procedures',
+    rating: 'recommended',
+    ratingLabel: 'Recommended',
+    evidence: 'Strong',
+    concerns: ['Double Chin', 'Submental Fat', 'Jawline Definition'],
+    trending: false,
+    carriedByNGD: true,
+    price: 'Consultation required',
+    overview: 'Injectable treatment that permanently destroys fat cells under the chin. FDA-approved for submental fat reduction.',
+    verdict: 'The only FDA-approved injectable for double chin. Results are permanent once fat cells are destroyed. Expect significant swelling for 1-2 weeks after each treatment. Most patients need 2-4 sessions.',
+    lastReviewed: '2025-01-18'
+  },
+  {
+    id: 'laser-hair-removal',
+    name: 'Laser Hair Removal',
+    category: 'Procedures',
+    rating: 'gold',
+    ratingLabel: 'Gold Standard',
+    evidence: 'Extensive',
+    concerns: ['Unwanted Hair', 'Ingrown Hairs', 'Razor Bumps'],
+    trending: false,
+    carriedByNGD: true,
+    price: 'Varies by area',
+    overview: 'Laser energy targets pigment in hair follicles to permanently reduce hair growth. Most effective for light skin with dark hair.',
+    verdict: 'The gold standard for permanent hair reduction. Requires 6-8 sessions for optimal results. Works best on dark hair; not effective for blonde, gray, or red hair. Newer lasers can safely treat darker skin tones.',
+    lastReviewed: '2025-01-15'
+  },
+  {
+    id: 'morpheus8',
+    name: 'Morpheus8 RF Microneedling',
+    category: 'Procedures',
+    rating: 'recommended',
+    ratingLabel: 'Recommended',
+    evidence: 'Moderate',
+    concerns: ['Skin Laxity', 'Wrinkles', 'Acne Scars', 'Jowls', 'Body Contouring'],
+    trending: true,
+    carriedByNGD: true,
+    price: 'Starting at $800',
+    overview: 'Combines microneedling with radiofrequency energy to tighten skin and remodel collagen at deeper levels than traditional microneedling.',
+    verdict: 'One of the most effective non-surgical options for skin tightening. The RF energy reaches deeper tissues for more significant lifting. Expect 3-5 days of redness and swelling. Safe for all skin tones.',
+    lastReviewed: '2025-01-24'
   }
 ];
 
@@ -859,6 +1026,12 @@ const categoryMeta = {
     slug: 'post-procedure',
     description: 'Recovery & healing support',
     color: '#64748b'
+  },
+  'Procedures': {
+    icon: '✨',
+    slug: 'procedures',
+    description: 'In-office treatments & lasers',
+    color: '#0ea5e9'
   }
 };
 
@@ -988,9 +1161,10 @@ function App() {
         product.concerns.some(c => c.toLowerCase().includes(search.toLowerCase()));
       const matchesCategory = categoryFilter === 'All' || product.category === categoryFilter;
       const matchesRating = ratingFilter === 'all' || product.rating === ratingFilter;
-      return matchesSearch && matchesCategory && matchesRating;
+      const matchesNGD = !ngdOnlyFilter || product.carriedByNGD;
+      return matchesSearch && matchesCategory && matchesRating && matchesNGD;
     });
-  }, [search, categoryFilter, ratingFilter]);
+  }, [search, categoryFilter, ratingFilter, ngdOnlyFilter]);
 
   const handleProductClick = (productId) => {
     const newExpanded = expandedProduct === productId ? null : productId;
